@@ -2,12 +2,10 @@ package com.example.hbomax.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Max Primary Colors (Dark Theme Focused)
 val MaxPurpleDark = Color(0xFF300D4F) // A deep, rich purple
 val MaxPurpleDarker = Color(0xFF200A35) // Even deeper for primary variant or specific backgrounds
 val MaxPinkAccent = Color(0xFFD4007E) // Vibrant pink/magenta for accents
 
-// Neutrals for Dark Theme
 val MaxBackgroundDark = Color(0xFF121212) // Very dark gray, standard for dark themes
 val MaxSurfaceDark = Color(0xFF1E1E1E)    // Slightly lighter for cards/surfaces on dark background
 val MaxOnPrimaryDark = Color.White        // Text/icons on MaxPurpleDark

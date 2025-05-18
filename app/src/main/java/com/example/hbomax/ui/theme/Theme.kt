@@ -55,7 +55,7 @@ private val MaxDarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun HBOMaxTheme( // Renamed from YourThemeName to HBOMaxTheme
+fun HBOMaxTheme(
     darkTheme: Boolean = isSystemInDarkTheme(), // Default to system theme, Max is typically dark
     // Dynamic color is available on Android 12+
     // Max has strong branding, so dynamic color might be undesirable. Set to false.

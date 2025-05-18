@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.hbomax.ui.AppNavHost
 import com.example.hbomax.ui.theme.HBOMaxTheme
-import com.example.hbomax.ui.theme.MaxBackgroundDark
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +21,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController() // Create NavController
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaxBackgroundDark
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     AppNavHost(navController = navController) // Set up navigation
                 }
