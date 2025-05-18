@@ -25,7 +25,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "TMDB_API_KEY", "\"xxx\"")
+        buildConfigField("String", "TMDB_API_KEY", "\"1fad4cff4592a0d2ac79c447c3c67c8f\"")
     }
 
     buildTypes {
@@ -58,7 +58,11 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose.v270)
     implementation(libs.volley)
+    implementation(libs.androidx.media3.common.ktx)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

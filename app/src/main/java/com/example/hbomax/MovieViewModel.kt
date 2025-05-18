@@ -22,7 +22,7 @@ class MovieViewModel : ViewModel() {
         fetchPopularMovies()
     }
 
-    fun fetchPopularMovies() {
+    private fun fetchPopularMovies() {
         _uiState.value = MovieUiState.Loading // Set loading state
         viewModelScope.launch {
             try {

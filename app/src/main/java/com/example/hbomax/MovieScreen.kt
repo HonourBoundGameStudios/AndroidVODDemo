@@ -18,28 +18,31 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.hbomax.ui.theme.HBOMaxTheme
-
+import com.example.hbomax.ui.theme.MaxOnPrimaryDark
+import com.example.hbomax.ui.theme.MaxPurpleDark
+import androidx.compose.foundation.clickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieScreen(movieViewModel: MovieViewModel = MovieViewModel()) {
+fun MovieScreen(movieViewModel: MovieViewModel = MovieViewModel(),
+                onMovieClick: (Int) -> Unit) {
     val uiState by movieViewModel.uiState.collectAsState()
 
-    Scaffold( // Provides basic Material Design layout structure
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Popular Movies") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaxPurpleDark,
+                    titleContentColor = MaxOnPrimaryDark
                 )
             )
         }
-    ) { paddingValues -> // Content padding provided by Scaffold
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Apply padding from Scaffold
+                .padding(paddingValues)
         ) {
             when (val state = uiState) {
                 is MovieUiState.Loading -> {
@@ -54,7 +57,7 @@ fun MovieScreen(movieViewModel: MovieViewModel = MovieViewModel()) {
                             style = MaterialTheme.typography.bodyLarge
                         )
                     } else {
-                        MovieListGrid(movies = state.movies)
+                        MovieListGrid(movies = state.movies, onMovieClick = onMovieClick)
                     }
                 }
 
@@ -74,52 +77,54 @@ fun MovieScreen(movieViewModel: MovieViewModel = MovieViewModel()) {
 }
 
 @Composable
-fun MovieListGrid(movies: List<Movie>) {
+fun MovieListGrid(movies: List<Movie>,
+                  onMovieClick: (Int) -> Unit) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(3), // 3 columns
+        columns = GridCells.Fixed(2), // 3 columns
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp), // Spacing between rows
         horizontalArrangement = Arrangement.spacedBy(8.dp) // Spacing between columns
     ) {
         items(movies, key = { movie -> movie.id }) { movie -> // Add key for better performance
-            MovieGridItem(movie = movie)
+            MovieGridItem(movie = movie,
+                onMovieClick = { onMovieClick(movie.id) }) // Handle click)
         }
     }
 }
 
 @Composable
-fun MovieGridItem(movie: Movie) {
+fun MovieGridItem(movie: Movie,
+                  onMovieClick: (Int) -> Unit) {
     Card(
         modifier = Modifier
-            .aspectRatio(1f) // 1:1 Aspect Ratio for the cell
+            .aspectRatio(2f / 3f)
+            .clickable { onMovieClick(movie.id) } // Handle click
             .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(contentAlignment = Alignment.BottomCenter) { // For overlaying text later if needed
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(RetrofitClient.imageBaseUrl + movie.posterPath)
                     .crossfade(true) // Optional: for smooth transition
-                    .error(android.R.drawable.ic_menu_gallery) // Placeholder for error
-                    .placeholder(android.R.drawable.ic_menu_rotate) // Placeholder while loading
                     .build(),
                 contentDescription = movie.title,
-                contentScale = ContentScale.Crop, // Crop to fill 1:1 cell
+                contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize()
             )
             // Optional: Add movie title overlay
-            // Text(
-            //     text = movie.title,
-            //     modifier = Modifier
-            //         .fillMaxWidth()
-            //         .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f))
-            //         .padding(4.dp),
-            //     color = MaterialTheme.colorScheme.onPrimaryContainer,
-            //     textAlign = TextAlign.Center,
-            //     maxLines = 2,
-            //     overflow = TextOverflow.Ellipsis,
-            //     style = MaterialTheme.typography.labelSmall
-            // )
+//            Text(
+//                text = movie.title,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f))
+//                    .padding(4.dp),
+//                color = MaterialTheme.colorScheme.onPrimaryContainer,
+//                textAlign = TextAlign.Center,
+//                maxLines = 2,
+//                overflow = TextOverflow.Ellipsis,
+//                style = MaterialTheme.typography.labelSmall
+//            )
         }
     }
 }
@@ -128,14 +133,15 @@ fun MovieGridItem(movie: Movie) {
 @Preview(showBackground = true)
 @Composable
 fun MovieGridItemPreview() {
-    HBOMaxTheme { // Replace with your theme
+    HBOMaxTheme {
         MovieGridItem(
             movie = Movie(
                 id = 1,
                 title = "Sample Movie Title That Is Quite Long",
-                posterPath = "/qhb1qOilapbapxWQn9jtRCMFRXU.jpg", // Example path
+                posterPath = "/qhb1qOilapbapxWQn9jtRCMFRXU.jpg",
                 overview = "This is a sample overview."
-            )
+            ),
+            onMovieClick = {}
         )
     }
 }
@@ -166,7 +172,7 @@ fun MovieScreenSuccessPreview() {
     HBOMaxTheme { // Replace with your theme
         Scaffold(topBar = { TopAppBar(title = { Text("Popular Movies") }) }) { padding ->
             Box(Modifier.padding(padding)) {
-                MovieListGrid(movies = sampleMovies)
+                MovieListGrid(movies = sampleMovies, onMovieClick = {})
             }
         }
     }

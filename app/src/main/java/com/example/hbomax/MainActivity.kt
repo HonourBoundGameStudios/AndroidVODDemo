@@ -4,9 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
+import com.example.hbomax.ui.AppNavHost
 import com.example.hbomax.ui.theme.HBOMaxTheme
+import com.example.hbomax.ui.theme.MaxBackgroundDark
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,16 +19,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HBOMaxTheme {
-                    MovieScreen() // Call your main screen composable
+                val navController = rememberNavController() // Create NavController
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaxBackgroundDark
+                ) {
+                    AppNavHost(navController = navController) // Set up navigation
+                }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HBOMaxTheme {
-        MovieScreen() // Call your main screen composable
     }
 }
