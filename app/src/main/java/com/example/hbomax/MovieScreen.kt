@@ -18,14 +18,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.hbomax.ui.theme.HBOMaxTheme
-import com.example.hbomax.ui.theme.MaxOnPrimaryDark
-import com.example.hbomax.ui.theme.MaxPurpleDark
 import androidx.compose.foundation.clickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieScreen(movieViewModel: MovieViewModel = MovieViewModel(),
-                onMovieClick: (Int) -> Unit) {
+fun MovieScreen(
+    movieViewModel: MovieViewModel = MovieViewModel(),
+    onMovieClick: (Int) -> Unit
+) {
     val uiState by movieViewModel.uiState.collectAsState()
 
     Scaffold(
@@ -33,8 +33,8 @@ fun MovieScreen(movieViewModel: MovieViewModel = MovieViewModel(),
             TopAppBar(
                 title = { Text("Popular Movies") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaxPurpleDark,
-                    titleContentColor = MaxOnPrimaryDark
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
@@ -77,8 +77,10 @@ fun MovieScreen(movieViewModel: MovieViewModel = MovieViewModel(),
 }
 
 @Composable
-fun MovieListGrid(movies: List<Movie>,
-                  onMovieClick: (Int) -> Unit) {
+fun MovieListGrid(
+    movies: List<Movie>,
+    onMovieClick: (Int) -> Unit
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2), // 3 columns
         contentPadding = PaddingValues(8.dp),
@@ -86,21 +88,24 @@ fun MovieListGrid(movies: List<Movie>,
         horizontalArrangement = Arrangement.spacedBy(8.dp) // Spacing between columns
     ) {
         items(movies, key = { movie -> movie.id }) { movie -> // Add key for better performance
-            MovieGridItem(movie = movie,
+            MovieGridItem(
+                movie = movie,
                 onMovieClick = { onMovieClick(movie.id) }) // Handle click)
         }
     }
 }
 
 @Composable
-fun MovieGridItem(movie: Movie,
-                  onMovieClick: (Int) -> Unit) {
+fun MovieGridItem(
+    movie: Movie,
+    onMovieClick: (Int) -> Unit
+) {
     Card(
         modifier = Modifier
             .aspectRatio(2f / 3f)
             .clickable { onMovieClick(movie.id) } // Handle click
             .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(contentAlignment = Alignment.BottomCenter) { // For overlaying text later if needed
             AsyncImage(

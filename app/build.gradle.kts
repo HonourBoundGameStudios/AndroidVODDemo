@@ -46,55 +46,38 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.navigation.compose.v270)
-    implementation(libs.volley)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.media3.common.ktx)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.exoplayer.hls)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-
-    val composeBom = platform("androidx.compose:compose-bom:2023.08.00") // Check for latest BOM
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
     implementation(libs.material3)
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.retrofit)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.logging.interceptor)
+    implementation(libs.coil.compose)
+
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
     debugImplementation(libs.ui.tooling)
 
-    // ViewModel for Compose
-    implementation(libs.androidx.lifecycle.viewmodel.compose) // Check latest
-
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.android) // Check latest
-
-    // Retrofit & Kotlinx Serialization Converter
-    implementation(libs.retrofit)
-    implementation(libs.kotlinx.serialization.json) // Check latest
-    implementation(libs.retrofit2.kotlinx.serialization.converter) // Check latest
-
-    // OkHttp Logging Interceptor (optional, but useful for debugging network calls)
-    implementation(libs.logging.interceptor) // Check latest
-
-    // Image Loading (Coil)
-    implementation(libs.coil.compose) // Check latest
 }
