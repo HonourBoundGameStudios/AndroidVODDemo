@@ -9,6 +9,13 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.hbomax.ui.AppDestinations
 
+val bottomNavItems = listOf(
+    BottomNavItem.Home,
+    BottomNavItem.Search,
+    BottomNavItem.Profile,
+    BottomNavItem.Settings
+)
+
 sealed class BottomNavItem(
         val route: String, // A route string if this integrates with full NavController
         val title: String,

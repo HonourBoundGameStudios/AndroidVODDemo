@@ -7,17 +7,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.hbomax.ui.components.GradientButton
+import com.example.hbomax.ui.navigation.bottomNavItems
 import com.example.hbomax.ui.theme.HBOMaxTheme
 import com.example.hbomax.ui.theme.MaxButtonGrey
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StylesScreen(onNavigateBack: () -> Unit) {
+fun StylesScreen(navController: NavHostController, onNavigateBack: () -> Unit) {
+
+    var selectedItemIndex by remember { mutableIntStateOf(0) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -36,6 +45,34 @@ fun StylesScreen(onNavigateBack: () -> Unit) {
                     titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant // Or onPrimary
                 )
             )
+        },
+        bottomBar = {
+            NavigationBar(
+                containerColor = MaterialTheme.colorScheme.surface, // Or surfaceVariant
+                contentColor = MaterialTheme.colorScheme.onSurface
+            ) {
+                bottomNavItems.forEachIndexed { index, item ->
+                    NavigationBarItem(
+                        selected = selectedItemIndex == index,
+                        onClick = {
+                            selectedItemIndex = index
+                            // TODO: Handle navigation based on item.route
+
+                            navController.navigate(item.route)
+
+                        },
+                        label = { Text(item.title, style = MaterialTheme.typography.labelSmall) },
+                        icon = { Icon(item.icon, contentDescription = item.title) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.primary, // Or your MaxVibrantPurple
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            indicatorColor = MaterialTheme.colorScheme.secondaryContainer // Or a subtle primary variant
+                        )
+                    )
+                }
+            }
         }
     ) { paddingValues ->
         Column(
@@ -135,7 +172,11 @@ fun SectionTitle(title: String) {
 
 @Composable
 fun TypographySection() {
-    Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         SectionTitle("Typography")
         Text("Display Large", style = MaterialTheme.typography.displayLarge)
         Text("Headline Large", style = MaterialTheme.typography.headlineLarge)
@@ -165,21 +206,8 @@ fun ButtonSection() {
         GradientButton(
             text = "Normal Grey Button",
             onClick = { /*TODO*/ },
-            gradientColors = listOf(
-                MaxButtonGrey,
-                MaxButtonGrey
-            ),
+            gradientColors = listOf(MaxButtonGrey, MaxButtonGrey),
             textStyle = MaterialTheme.typography.labelMedium
         )
-    }
-}
-
-
-// --- Preview ---
-@Preview(showBackground = true, widthDp = 380, heightDp = 1200)
-@Composable
-fun StylesScreenPreview() {
-    HBOMaxTheme {
-        StylesScreen(onNavigateBack = {})
     }
 }

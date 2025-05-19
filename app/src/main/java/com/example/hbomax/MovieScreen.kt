@@ -20,7 +20,7 @@ import coil.request.ImageRequest
 import com.example.hbomax.ui.theme.HBOMaxTheme
 import androidx.compose.foundation.clickable
 import androidx.navigation.NavHostController
-import com.example.hbomax.ui.navigation.BottomNavItem
+import com.example.hbomax.ui.navigation.bottomNavItems
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,13 +34,6 @@ fun MovieScreen(
     // State for managing the selected bottom navigation item
     // For a real app, this would likely be tied to your NavController's current route
     var selectedItemIndex by remember { mutableIntStateOf(0) } // Default to Home (index 0)
-
-    val bottomNavItems = listOf(
-        BottomNavItem.Home,
-        BottomNavItem.Search,
-        BottomNavItem.Profile,
-        BottomNavItem.Settings
-    )
 
     Scaffold(
         topBar = {
@@ -61,10 +54,7 @@ fun MovieScreen(
                         selected = selectedItemIndex == index,
                         onClick = {
                             selectedItemIndex = index
-                            // TODO: Handle navigation based on item.route
-
                             navController.navigate(item.route)
-
                         },
                         label = { Text(item.title, style = MaterialTheme.typography.labelSmall) },
                         icon = { Icon(item.icon, contentDescription = item.title) },

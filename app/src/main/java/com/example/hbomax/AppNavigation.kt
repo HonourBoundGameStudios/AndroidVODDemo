@@ -25,19 +25,12 @@ fun AppNavHost(navController: NavHostController) {
     ) {
         // Movie Grid Screen
         composable(route = AppDestinations.MOVIE_GRID_ROUTE) {
-            MovieScreen( navController,
-                onMovieClick = { movieId ->
-                    // Navigate to player screen, passing the movie ID
-                    navController.navigate("${AppDestinations.PLAYER_ROUTE}/$movieId")
-                }
-            )
+            MovieScreen( navController, onMovieClick = { movieId -> navController.navigate("${AppDestinations.PLAYER_ROUTE}/$movieId")})
         }
 
         // Styles Guide Screen
         composable(route = AppDestinations.STYLES_GUIDE_ROUTE) {
-            StylesScreen(
-                onNavigateBack = { navController.popBackStack() }
-            )
+            StylesScreen( navController, onNavigateBack = { navController.popBackStack() })
         }
 
         // Player Screen
