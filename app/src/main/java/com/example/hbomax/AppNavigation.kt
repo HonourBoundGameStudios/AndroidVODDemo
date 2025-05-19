@@ -13,8 +13,8 @@ import com.example.hbomax.ui.moviedetail.PlayerScreen
 object AppDestinations {
     const val MOVIE_GRID_ROUTE = "movie_grid"
     const val PLAYER_ROUTE = "player"
-    const val MOVIE_ID_ARG = "movieId" // Argument name for passing movie ID
     const val STYLES_GUIDE_ROUTE = "styles_guide"
+    const val MOVIE_ID_ARG = "movieId" // Argument name for passing movie ID
 }
 
 @Composable
@@ -25,7 +25,7 @@ fun AppNavHost(navController: NavHostController) {
     ) {
         // Movie Grid Screen
         composable(route = AppDestinations.MOVIE_GRID_ROUTE) {
-            MovieScreen(
+            MovieScreen( navController,
                 onMovieClick = { movieId ->
                     // Navigate to player screen, passing the movie ID
                     navController.navigate("${AppDestinations.PLAYER_ROUTE}/$movieId")

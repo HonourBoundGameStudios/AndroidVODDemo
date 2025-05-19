@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,13 +19,28 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.hbomax.ui.theme.HBOMaxTheme
 import androidx.compose.foundation.clickable
+import androidx.navigation.NavHostController
+import com.example.hbomax.ui.navigation.BottomNavItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieScreen(
-    popularMovieViewModel: PopularMovieViewModel = PopularMovieViewModel(), onMovieClick: (Int) -> Unit
+    navController: NavHostController,
+    popularMovieViewModel: PopularMovieViewModel = PopularMovieViewModel(),
+    onMovieClick: (Int) -> Unit
 ) {
     val uiState by popularMovieViewModel.uiState.collectAsState()
+
+    // State for managing the selected bottom navigation item
+    // For a real app, this would likely be tied to your NavController's current route
+    var selectedItemIndex by remember { mutableIntStateOf(0) } // Default to Home (index 0)
+
+    val bottomNavItems = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Search,
+        BottomNavItem.Profile,
+        BottomNavItem.Settings
+    )
 
     Scaffold(
         topBar = {
@@ -35,7 +50,36 @@ fun MovieScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
-        }) { paddingValues ->
+        },
+        bottomBar = {
+            NavigationBar(
+                containerColor = MaterialTheme.colorScheme.surface, // Or surfaceVariant
+                contentColor = MaterialTheme.colorScheme.onSurface
+            ) {
+                bottomNavItems.forEachIndexed { index, item ->
+                    NavigationBarItem(
+                        selected = selectedItemIndex == index,
+                        onClick = {
+                            selectedItemIndex = index
+                            // TODO: Handle navigation based on item.route
+
+                            navController.navigate(item.route)
+
+                        },
+                        label = { Text(item.title, style = MaterialTheme.typography.labelSmall) },
+                        icon = { Icon(item.icon, contentDescription = item.title) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.primary, // Or your MaxVibrantPurple
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            indicatorColor = MaterialTheme.colorScheme.secondaryContainer // Or a subtle primary variant
+                        )
+                    )
+                }
+            }
+        }
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -98,7 +142,7 @@ fun MovieGridItem(
         modifier = Modifier
             .aspectRatio(2f / 3f)
             .clickable { onMovieClick(movie.id) } // Handle click
-        .fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+            .fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
         Box(contentAlignment = Alignment.BottomCenter) { // For overlaying text later if needed
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -109,19 +153,6 @@ fun MovieGridItem(
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize()
             )
-            // Optional: Add movie title overlay
-//            Text(
-//                text = movie.title,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f))
-//                    .padding(4.dp),
-//                color = MaterialTheme.colorScheme.onPrimaryContainer,
-//                textAlign = TextAlign.Center,
-//                maxLines = 2,
-//                overflow = TextOverflow.Ellipsis,
-//                style = MaterialTheme.typography.labelSmall
-//            )
         }
     }
 }
@@ -158,18 +189,9 @@ fun MovieScreenLoadingPreview() {
 @Preview(showBackground = true, widthDp = 360, heightDp = 640)
 @Composable
 fun MovieScreenSuccessPreview() {
-    val sampleMovies = listOf(
-        Movie(1, "Movie 1", "/path1.jpg", "Overview 1", "2023-10-01"),
-        Movie(2, "Movie 2", "/path2.jpg", "Overview 2", "2023-10-01"),
-        Movie(3, "Movie 3", "/path3.jpg", "Overview 3", "2023-10-01"),
-        Movie(4, "Movie 4", "/path4.jpg", "Overview 4", "2023-10-01"),
-        Movie(5, "Movie 5", "/path5.jpg", "Overview 5", "2023-10-01")
-    )
     HBOMaxTheme { // Replace with your theme
-        Scaffold(topBar = { TopAppBar(title = { Text("Popular Movies") }) }) { padding ->
-            Box(Modifier.padding(padding)) {
-                MovieListGrid(movies = sampleMovies, onMovieClick = {})
-            }
-        }
+        MovieScreen(
+            onMovieClick = {}, navController = NavHostController(LocalContext.current),
+        )
     }
 }

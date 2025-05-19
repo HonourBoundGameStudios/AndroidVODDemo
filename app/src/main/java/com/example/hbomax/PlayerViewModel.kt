@@ -15,9 +15,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-// Define UI states for the PlayerScreen, including loading the video URL
 sealed interface PlayerUiState {
-    object Idle : PlayerUiState // Initial state
+    object Idle : PlayerUiState
     object LoadingVideoUrl : PlayerUiState
     data class PlayerReady(val exoPlayer: ExoPlayer) : PlayerUiState
     data class Error(val message: String) : PlayerUiState
@@ -25,7 +24,7 @@ sealed interface PlayerUiState {
 }
 
 class PlayerViewModel(
-    private val application: Application, // Keep application for ExoPlayer Builder
+    private val application: Application,
     private val movieId: Int?
 ) : ViewModel() {
 
@@ -33,7 +32,8 @@ class PlayerViewModel(
     val uiState: StateFlow<PlayerUiState> = _uiState.asStateFlow()
 
     // A known good, directly playable HLS stream as a fallback
-    private val fallbackVideoUrl = "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8"
+    private val fallbackVideoUrl =
+        "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8"
     private var exoPlayerInstance: ExoPlayer? = null
 
     init {
@@ -61,17 +61,17 @@ class PlayerViewModel(
                 // Find a suitable video, e.g., a Trailer from YouTube
                 val anyYouTubeVideo = videoResponse.results.find { it.site == "YouTube" }
 
-                var streamUrl: String
-                var sourceDescription = "No suitable video found"
-
                 if (anyYouTubeVideo?.videoKey != null && anyYouTubeVideo.site == "YouTube") {
                     val youtubeVideoKey = anyYouTubeVideo?.videoKey
 
-                    Log.i("PlayerViewModel", "Found YouTube video key: $youtubeVideoKey. Will suggest opening externally.")
-                    // In your PlayerScreen, if you get a "youtubeKey" instead of a streamUrl:
-                    // you would trigger an Intent to open YouTube.
+                    Log.i(
+                        "PlayerViewModel",
+                        "Found YouTube video key: $youtubeVideoKey. Will suggest opening externally."
+                    )
+
                     _uiState.value = PlayerUiState.YouTubeKeyFound(youtubeVideoKey) // New UI state
-                    return@launch // Don't proceed to preparePlayerWithUrl with a YouTube key
+
+                    return@launch
                 }
 
                 // We are going to be using the YouTube app to play the video to simplify the process
@@ -79,13 +79,20 @@ class PlayerViewModel(
 
             } catch (e: IOException) {
                 Log.e("PlayerViewModel", "Network error fetching video URL: ${e.message}", e)
-                _uiState.value = PlayerUiState.Error("Network error: Could not load video information.")
+                _uiState.value =
+                    PlayerUiState.Error("Network error: Could not load video information.")
                 // Optionally, still try to play fallback on network error for videos endpoint
-                preparePlayerWithUrl(fallbackVideoUrl, "Fallback due to network error fetching video list")
+                preparePlayerWithUrl(
+                    fallbackVideoUrl,
+                    "Fallback due to network error fetching video list"
+                )
             } catch (e: Exception) {
                 Log.e("PlayerViewModel", "Error fetching/processing video URL: ${e.message}", e)
                 _uiState.value = PlayerUiState.Error("Error: Could not load video information.")
-                preparePlayerWithUrl(fallbackVideoUrl, "Fallback due to general error fetching video list")
+                preparePlayerWithUrl(
+                    fallbackVideoUrl,
+                    "Fallback due to general error fetching video list"
+                )
             }
         }
     }
@@ -93,7 +100,10 @@ class PlayerViewModel(
     private fun preparePlayerWithUrl(videoUrl: String, sourceDescription: String) {
         viewModelScope.launch { // Ensure player init is on a coroutine scope if not already
             try {
-                Log.d("PlayerViewModel", "Preparing player with URL: $videoUrl (Source: $sourceDescription)")
+                Log.d(
+                    "PlayerViewModel",
+                    "Preparing player with URL: $videoUrl (Source: $sourceDescription)"
+                )
                 // Release existing player if any
                 exoPlayerInstance?.release()
 
@@ -108,7 +118,7 @@ class PlayerViewModel(
                 newPlayer.addListener(object : Player.Listener {
                     override fun onPlaybackStateChanged(playbackState: Int) {
                         // Log state or update UI
-                        val state = when(playbackState) {
+                        val state = when (playbackState) {
                             Player.STATE_IDLE -> "IDLE"
                             Player.STATE_BUFFERING -> "BUFFERING"
                             Player.STATE_READY -> "READY"
@@ -117,6 +127,7 @@ class PlayerViewModel(
                         }
                         Log.d("PlayerViewModel", "Player state: $state")
                     }
+
                     override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
                         Log.e("PlayerViewModel", "Player error: ${error.message}", error)
                         _uiState.value = PlayerUiState.Error("Playback error: ${error.message}")
@@ -145,7 +156,6 @@ class PlayerViewModel(
     }
 }
 
-// Factory remains the same
 class PlayerViewModelFactory(
     private val application: Application,
     private val movieId: Int?
