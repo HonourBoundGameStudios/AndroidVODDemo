@@ -21,6 +21,7 @@ sealed interface PlayerUiState {
     object LoadingVideoUrl : PlayerUiState
     data class PlayerReady(val exoPlayer: ExoPlayer) : PlayerUiState
     data class Error(val message: String) : PlayerUiState
+    data class YouTubeKeyFound(val youtubeKey: String) : PlayerUiState // New state for YouTube key
 }
 
 class PlayerViewModel(
@@ -60,29 +61,21 @@ class PlayerViewModel(
                 // Find a suitable video, e.g., a Trailer from YouTube
                 val anyYouTubeVideo = videoResponse.results.find { it.site == "YouTube" }
 
-                var streamUrl: String? = null
+                var streamUrl: String
                 var sourceDescription = "No suitable video found"
 
-                val youtubeVideoKey = anyYouTubeVideo?.videoKey
+                if (anyYouTubeVideo?.videoKey != null && anyYouTubeVideo.site == "YouTube") {
+                    val youtubeVideoKey = anyYouTubeVideo?.videoKey
 
-                if (youtubeVideoKey != null) {
-                    // ExoPlayer CANNOT play YouTube URLs (like https://www.youtube.com/watch?v=KEY) directly
-                    // without a specific YouTube extractor library (e.g., NewPipeExtractor or similar).
-                    // This is complex to add quickly.
-                    // So, for this demo, if we find a YouTube key, we'll LOG it but still use the fallback.
-                    Log.i("PlayerViewModel", "Found YouTube video key: $youtubeVideoKey. Direct playback of YouTube URLs is not supported by default ExoPlayer.")
-                    sourceDescription = "Found YouTube trailer (key: $youtubeVideoKey), using fallback stream for demo."
-                    // In a real app with a YouTube extractor:
-                    // streamUrl = getStreamableUrlFromYouTubeKey(youtubeVideoKey) // This function would use an extractor
+                    Log.i("PlayerViewModel", "Found YouTube video key: $youtubeVideoKey. Will suggest opening externally.")
+                    // In your PlayerScreen, if you get a "youtubeKey" instead of a streamUrl:
+                    // you would trigger an Intent to open YouTube.
+                    _uiState.value = PlayerUiState.YouTubeKeyFound(youtubeVideoKey) // New UI state
+                    return@launch // Don't proceed to preparePlayerWithUrl with a YouTube key
                 }
 
-                // If no YouTube video or if we're intentionally using fallback:
-                if (streamUrl == null) {
-                    Log.w("PlayerViewModel", "$sourceDescription. Using fallback HLS stream.")
-                    streamUrl = fallbackVideoUrl
-                }
-
-                preparePlayerWithUrl(streamUrl, sourceDescription)
+                // We are going to be using the YouTube app to play the video to simplify the process
+//                preparePlayerWithUrl(streamUrl, sourceDescription)
 
             } catch (e: IOException) {
                 Log.e("PlayerViewModel", "Network error fetching video URL: ${e.message}", e)

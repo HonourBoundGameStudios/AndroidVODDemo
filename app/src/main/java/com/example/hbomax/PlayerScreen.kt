@@ -1,6 +1,9 @@
 package com.example.hbomax.ui.moviedetail
 
 import android.app.Application
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -8,6 +11,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect // Import LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +28,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 
+// Assume PlayerUiState includes:
+// sealed interface PlayerUiState {
+//     // ... other states
+//     data class YouTubeKeyFound(val youtubeKey: String) : PlayerUiState
+// }
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerScreen(
@@ -37,17 +48,15 @@ fun PlayerScreen(
         factory = PlayerViewModelFactory(application, movieId)
     )
     val uiState by playerViewModel.uiState.collectAsState()
-    var activePlayer: androidx.media3.common.Player? = null // Keep track of the active player instance
 
-    // Lifecycle management for the player
+    // Lifecycle management for the player (if using ExoPlayer directly)
     val lifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(lifecycleOwner, uiState) { // Re-run if uiState changes to PlayerReady
+    DisposableEffect(lifecycleOwner, uiState) {
         val observer = LifecycleEventObserver { _, event ->
             val currentPlayer = (uiState as? PlayerUiState.PlayerReady)?.exoPlayer
             when (event) {
                 Lifecycle.Event.ON_PAUSE -> currentPlayer?.pause()
                 Lifecycle.Event.ON_RESUME -> currentPlayer?.play()
-                // ViewModel's onCleared handles final release
                 else -> {}
             }
         }
@@ -57,16 +66,33 @@ fun PlayerScreen(
         }
     }
 
+    // Handle automatic navigation to YouTube when key is found
+    if (uiState is PlayerUiState.YouTubeKeyFound) {
+        val youtubeKeyState = uiState as PlayerUiState.YouTubeKeyFound // Smart cast
+        LaunchedEffect(key1 = youtubeKeyState.youtubeKey) { // Re-launch if key changes (unlikely here)
+            val youtubeAppIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:${youtubeKeyState.youtubeKey}"))
+            val youtubeWebIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=${youtubeKeyState.youtubeKey}"))
+
+            try {
+                context.startActivity(youtubeAppIntent)
+            } catch (e: ActivityNotFoundException) {
+                // YouTube app not found, try web browser
+                context.startActivity(youtubeWebIntent)
+            }
+            // After attempting to launch, navigate back from the player screen
+            // as its purpose (launching YouTube) is done.
+            // You might want a slight delay or a confirmation, but for direct launch, popBackStack is common.
+            navController.popBackStack()
+        }
+    }
+
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Movie ID: ${movieId ?: "N/A"}") },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        // Before popping back, ensure player is released by ViewModel if screen is destroyed
-                        // Though onCleared in ViewModel should handle this.
-                        navController.popBackStack()
-                    }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Filled.ArrowBack, "Back")
                     }
                 },
@@ -84,31 +110,29 @@ fun PlayerScreen(
             contentAlignment = Alignment.Center
         ) {
             when (val state = uiState) {
-                is PlayerUiState.Idle -> {
-                    // This state might be very brief
+                is PlayerUiState.Idle, PlayerUiState.LoadingVideoUrl -> {
                     CircularProgressIndicator()
-                    Text("Initializing...", color = Color.White, modifier = Modifier.padding(top = 60.dp))
-                }
-                is PlayerUiState.LoadingVideoUrl -> {
-                    CircularProgressIndicator()
-                    Text("Loading video...", color = Color.White, modifier = Modifier.padding(top = 60.dp))
+                    Text(
+                        if (state is PlayerUiState.LoadingVideoUrl) "Loading video..." else "Initializing...",
+                        color = Color.White,
+                        modifier = Modifier.padding(top = 60.dp)
+                    )
                 }
                 is PlayerUiState.PlayerReady -> {
-                    activePlayer = state.exoPlayer // Update active player
                     AndroidView(
-                        factory = { ctx ->
-                            PlayerView(ctx).apply {
-                                player = state.exoPlayer
-                                useController = true
-                            }
-                        },
-                        // update is called when the PlayerReady state (and thus exoPlayer instance) changes
-                        update = { view ->
-                            view.player = state.exoPlayer
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(16 / 9f)
+                        factory = { ctx -> PlayerView(ctx).apply { player = state.exoPlayer; useController = true } },
+                        update = { view -> view.player = state.exoPlayer },
+                        modifier = Modifier.fillMaxWidth().aspectRatio(16 / 9f)
+                    )
+                }
+                is PlayerUiState.YouTubeKeyFound -> {
+                    // Content for when YouTube key is found but before LaunchedEffect triggers
+                    // or if it fails to pop back stack immediately.
+                    CircularProgressIndicator()
+                    Text(
+                        "Opening trailer in YouTube...",
+                        color = Color.White,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
                 is PlayerUiState.Error -> {
