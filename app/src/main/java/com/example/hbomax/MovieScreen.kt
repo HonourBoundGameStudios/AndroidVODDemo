@@ -23,22 +23,19 @@ import androidx.compose.foundation.clickable
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieScreen(
-    movieViewModel: MovieViewModel = MovieViewModel(),
-    onMovieClick: (Int) -> Unit
+    popularMovieViewModel: PopularMovieViewModel = PopularMovieViewModel(), onMovieClick: (Int) -> Unit
 ) {
-    val uiState by movieViewModel.uiState.collectAsState()
+    val uiState by popularMovieViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Popular Movies") },
-                colors = TopAppBarDefaults.topAppBarColors(
+                title = { Text("Popular Movies") }, colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
-        }
-    ) { paddingValues ->
+        }) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -78,8 +75,7 @@ fun MovieScreen(
 
 @Composable
 fun MovieListGrid(
-    movies: List<Movie>,
-    onMovieClick: (Int) -> Unit
+    movies: List<Movie>, onMovieClick: (Int) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2), // 3 columns
@@ -89,24 +85,20 @@ fun MovieListGrid(
     ) {
         items(movies, key = { movie -> movie.id }) { movie -> // Add key for better performance
             MovieGridItem(
-                movie = movie,
-                onMovieClick = { onMovieClick(movie.id) }) // Handle click)
+                movie = movie, onMovieClick = { onMovieClick(movie.id) }) // Handle click)
         }
     }
 }
 
 @Composable
 fun MovieGridItem(
-    movie: Movie,
-    onMovieClick: (Int) -> Unit
+    movie: Movie, onMovieClick: (Int) -> Unit
 ) {
     Card(
         modifier = Modifier
             .aspectRatio(2f / 3f)
             .clickable { onMovieClick(movie.id) } // Handle click
-            .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
+        .fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
         Box(contentAlignment = Alignment.BottomCenter) { // For overlaying text later if needed
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -144,10 +136,9 @@ fun MovieGridItemPreview() {
                 id = 1,
                 title = "Sample Movie Title That Is Quite Long",
                 posterPath = "/qhb1qOilapbapxWQn9jtRCMFRXU.jpg",
-                overview = "This is a sample overview."
-            ),
-            onMovieClick = {}
-        )
+                overview = "This is a sample overview.",
+                releaseDate = "2023-10-01"
+            ), onMovieClick = {})
     }
 }
 
@@ -168,11 +159,11 @@ fun MovieScreenLoadingPreview() {
 @Composable
 fun MovieScreenSuccessPreview() {
     val sampleMovies = listOf(
-        Movie(1, "Movie 1", "/path1.jpg", "Overview 1"),
-        Movie(2, "Movie 2", "/path2.jpg", "Overview 2"),
-        Movie(3, "Movie 3", "/path3.jpg", "Overview 3"),
-        Movie(4, "Movie 4", "/path4.jpg", "Overview 4"),
-        Movie(5, "Movie 5", "/path5.jpg", "Overview 5")
+        Movie(1, "Movie 1", "/path1.jpg", "Overview 1", "2023-10-01"),
+        Movie(2, "Movie 2", "/path2.jpg", "Overview 2", "2023-10-01"),
+        Movie(3, "Movie 3", "/path3.jpg", "Overview 3", "2023-10-01"),
+        Movie(4, "Movie 4", "/path4.jpg", "Overview 4", "2023-10-01"),
+        Movie(5, "Movie 5", "/path5.jpg", "Overview 5", "2023-10-01")
     )
     HBOMaxTheme { // Replace with your theme
         Scaffold(topBar = { TopAppBar(title = { Text("Popular Movies") }) }) { padding ->

@@ -19,15 +19,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HBOMaxTheme {
-                StylesScreen(onNavigateBack = {}) // Dummy onNavigateBack for now
-
-//                val navController = rememberNavController() // Create NavController
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    AppNavHost(navController = navController) // Set up navigation
-//                }
+                val navController = rememberNavController() // Create NavController
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    AppNavHost(navController = navController) // Set up navigation
+                }
             }
         }
     }

@@ -14,7 +14,7 @@ sealed interface MovieUiState {
     data class Error(val message: String) : MovieUiState
 }
 
-class MovieViewModel : ViewModel() {
+class PopularMovieViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<MovieUiState>(MovieUiState.Loading)
     val uiState: StateFlow<MovieUiState> = _uiState
 

@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -14,7 +15,13 @@ interface ApiService {
     suspend fun getPopularMovies(
         @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY, // API key from BuildConfig
         @Query("page") page: Int = 1
-    ): MovieResponse // Retrofit will handle suspend functions and parse the response
+    ): PopularMovieResponse // Retrofit will handle suspend functions and parse the response
+
+    @GET("movie/{movie_id}/videos") // Endpoint for movie videos
+    suspend fun getMovieVideos(
+        @Path("movie_id") movieId: Int, // Movie ID to fetch videos for
+        @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY, // API key from BuildConfig
+    ): VideoResponse // Retrofit will handle suspend functions and parse the response
 }
 
 // Singleton for Retrofit instance
