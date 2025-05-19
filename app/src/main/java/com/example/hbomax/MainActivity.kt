@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.hbomax.ui.AppNavHost
+import com.example.hbomax.ui.StylesScreen
 import com.example.hbomax.ui.theme.HBOMaxTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,13 +19,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HBOMaxTheme {
-                val navController = rememberNavController() // Create NavController
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    AppNavHost(navController = navController) // Set up navigation
-                }
+                StylesScreen(onNavigateBack = {}) // Dummy onNavigateBack for now
+
+//                val navController = rememberNavController() // Create NavController
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    AppNavHost(navController = navController) // Set up navigation
+//                }
             }
         }
     }

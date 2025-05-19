@@ -7,7 +7,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
@@ -93,7 +92,7 @@ fun HBOMaxTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = com.example.hbomax.Typography, // Make sure you have a Typography.kt defined
+        typography = Typography, // Ensure you have a Typography.kt defined
         shapes = Shapes,         // Make sure you have a Shapes.kt defined
         content = content
     )
