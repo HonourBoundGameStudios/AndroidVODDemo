@@ -16,7 +16,7 @@ data class Movie(
 )
 
 @Serializable
-data class PopularMovieResponse(
+data class MovieResponse(
     val page: Int,
     val results: List<Movie>,
     @SerialName("total_pages")

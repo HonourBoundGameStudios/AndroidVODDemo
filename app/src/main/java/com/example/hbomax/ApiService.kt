@@ -15,14 +15,23 @@ interface ApiService {
     suspend fun getPopularMovies(
         @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY, // API key from BuildConfig
         @Query("page") page: Int = 1
-    ): PopularMovieResponse // Retrofit will handle suspend functions and parse the response
+    ): MovieResponse // Retrofit will handle suspend functions and parse the response
 
     @GET("movie/{movie_id}/videos") // Endpoint for movie videos
     suspend fun getMovieVideos(
         @Path("movie_id") movieId: Int, // Movie ID to fetch videos for
         @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY, // API key from BuildConfig
     ): VideoResponse // Retrofit will handle suspend functions and parse the response
+
+    @GET("search/movie")
+    suspend fun searchMovies(
+        @Query("api_key") apiKey: String = BuildConfig.TMDB_API_KEY,
+        @Query("query") searchQuery: String,
+        @Query("page") page: Int = 1
+        // You can add other params like include_adult, year, etc.
+    ): MovieResponse // Reusing MovieResponse as the structure is often similar
 }
+
 
 // Singleton for Retrofit instance
 object RetrofitClient {
