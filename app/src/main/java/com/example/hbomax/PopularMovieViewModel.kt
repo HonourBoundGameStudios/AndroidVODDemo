@@ -2,6 +2,8 @@ package com.example.hbomax // Adjust package name
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hbomax.services.TMDBApiServiceProvider
+import com.example.hbomax.ui.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -26,7 +28,7 @@ class PopularMovieViewModel : ViewModel() {
         _uiState.value = MovieUiState.Loading // Set loading state
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.instance.getPopularMovies()
+                val response = TMDBApiServiceProvider.instance.getPopularMovies()
                 _uiState.value = MovieUiState.Success(response.results)
             } catch (e: IOException) { // Network error
                 _uiState.value = MovieUiState.Error("Network error: ${e.localizedMessage}")

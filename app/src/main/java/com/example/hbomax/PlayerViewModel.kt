@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.hbomax.RetrofitClient
+import com.example.hbomax.services.TMDBApiServiceProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,7 +55,7 @@ class PlayerViewModel(
         viewModelScope.launch {
             try {
                 Log.d("PlayerViewModel", "Fetching videos for movieId: $id")
-                val videoResponse = RetrofitClient.instance.getMovieVideos(movieId = id)
+                val videoResponse = TMDBApiServiceProvider.instance.getMovieVideos(movieId = id)
                 Log.d("PlayerViewModel", "Video response: $videoResponse")
 
                 // Find a suitable video, e.g., a Trailer from YouTube

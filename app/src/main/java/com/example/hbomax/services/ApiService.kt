@@ -1,5 +1,8 @@
-package com.example.hbomax // Adjust package name
+package com.example.hbomax.services
 
+import com.example.hbomax.BuildConfig
+import com.example.hbomax.ui.MovieResponse
+import com.example.hbomax.ui.VideoResponse
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -34,7 +37,7 @@ interface ApiService {
 
 
 // Singleton for Retrofit instance
-object RetrofitClient {
+object TMDBApiServiceProvider {
     private const val BASE_URL = "https://api.themoviedb.org/3/"
     val imageBaseUrl = "https://image.tmdb.org/t/p/w500" // For constructing full image URLs
 

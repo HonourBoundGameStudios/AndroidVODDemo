@@ -1,4 +1,4 @@
-package com.example.hbomax.ui
+package com.example.hbomax.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,9 +33,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
-import com.example.hbomax.MovieScreen
-import com.example.hbomax.ui.moviedetail.PlayerScreen
-import com.example.hbomax.ui.search.SearchScreen
+import com.example.hbomax.ui.MovieScreen
+import com.example.hbomax.ui.StylesScreen
+import com.example.hbomax.ui.PlayerScreen
+import com.example.hbomax.ui.SearchScreen
 
 object AppRoutes {
     const val HOME_ROUTE = "home"

@@ -1,4 +1,4 @@
-package com.example.hbomax.ui.search
+package com.example.hbomax.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.hbomax.MovieListGrid
+import com.example.hbomax.ui.search.SearchUiState
+import com.example.hbomax.ui.search.SearchViewModel
 import com.example.hbomax.ui.theme.HBOMaxTheme
 
 // Import MovieUiState from your popular movies if it's the same, or define one for search

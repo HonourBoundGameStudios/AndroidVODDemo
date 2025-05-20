@@ -1,4 +1,4 @@
-package com.example.hbomax // Adjust package name
+package com.example.hbomax.ui
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

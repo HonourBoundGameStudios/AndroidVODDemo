@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.hbomax.ui.components.GradientButton
+import com.example.hbomax.ui.components.MovieCard
 import com.example.hbomax.ui.theme.MaxButtonGrey
 
 @OptIn(ExperimentalMaterial3Api::class)

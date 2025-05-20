@@ -3,8 +3,9 @@ package com.example.hbomax.ui.search // New package
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hbomax.Movie
-import com.example.hbomax.RetrofitClient
+import com.example.hbomax.services.TMDBApiServiceProvider
+import com.example.hbomax.ui.Movie
+
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,7 +72,7 @@ class SearchViewModel : ViewModel() {
         searchJob?.cancel() // Cancel previous job if any
         searchJob = viewModelScope.launch {
             try {
-                val response = RetrofitClient.instance.searchMovies(searchQuery = query)
+                val response = TMDBApiServiceProvider.instance.searchMovies(searchQuery = query)
                 if (response.results.isNotEmpty()) {
                     _uiState.value = SearchUiState.Success(response.results)
                 } else {
