@@ -148,7 +148,7 @@ fun AppNavHost(
         }
         // Add StylesScreen route if needed
         composable(route = AppRoutes.STYLES_GUIDE_ROUTE) {
-            StylesScreen(navController) { }
+            StylesScreen() { }
         }
     }
 }

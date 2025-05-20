@@ -28,10 +28,6 @@ fun MovieScreen(
 ) {
     val uiState by popularMovieViewModel.uiState.collectAsState()
 
-    // State for managing the selected bottom navigation item
-    // For a real app, this would likely be tied to your NavController's current route
-    var selectedItemIndex by remember { mutableIntStateOf(0) } // Default to Home (index 0)
-
     Scaffold(
         topBar = {
             TopAppBar(

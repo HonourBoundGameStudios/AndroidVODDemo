@@ -13,17 +13,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.example.hbomax.ui.components.GradientButton
 import com.example.hbomax.ui.theme.MaxButtonGrey
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StylesScreen(navController: NavHostController, onNavigateBack: () -> Unit) {
-
-    var selectedItemIndex by remember { mutableIntStateOf(0) }
+fun StylesScreen(onNavigateBack: () -> Unit) {
 
     Scaffold(
         topBar = {
