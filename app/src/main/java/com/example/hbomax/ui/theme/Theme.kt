@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat.Type
 
 private val MaxDarkColorScheme = darkColorScheme(
     primary = MaxPurpleDark,               // Main brand color, often for app bars, prominent buttons
@@ -81,12 +82,10 @@ fun HBOMaxTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb() // Or colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false // For dark status bar icons on light SB
-            // For Max, status bar icons should likely be light as the bar will be dark.
-            // If status bar is colorScheme.primary (MaxPurpleDark), icons should be light.
-            // If status bar is colorScheme.background (MaxBackgroundDark), icons should be light.
-            // 'isAppearanceLightStatusBars = false' makes status bar icons light.
+            window.statusBarColor = colorScheme.background.toArgb()
+            val insets = WindowCompat.getInsetsController(window, view)
+            insets.isAppearanceLightStatusBars = false // For dark status bar icons on light SB
+            insets.hide(Type.systemBars()) // Hide system bars for immersive experience
         }
     }
 

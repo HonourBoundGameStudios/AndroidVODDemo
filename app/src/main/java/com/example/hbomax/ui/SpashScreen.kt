@@ -39,12 +39,6 @@ fun SplashScreen(
     val uiState by splashViewModel.uiState.collectAsState()
     var imageLoadedSuccessfully by remember { mutableStateOf(false) }
 
-    // LaunchedEffect(key1 = true) { // Runs once when the composable enters composition
-    //     delay(SPLASH_DISPLAY_DURATION)
-    //     onSplashFinished()
-    // }
-
-    // For clickable without visual indication (ripple)
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
