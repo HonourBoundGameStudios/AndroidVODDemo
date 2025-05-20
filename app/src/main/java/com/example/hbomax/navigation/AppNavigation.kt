@@ -34,11 +34,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.hbomax.ui.MovieScreen
-import com.example.hbomax.ui.StylesScreen
 import com.example.hbomax.ui.PlayerScreen
 import com.example.hbomax.ui.SearchScreen
+import com.example.hbomax.ui.StylesScreen
+import com.example.hbomax.ui.splash.SplashScreen
 
 object AppRoutes {
+    const val SPLASH_ROUTE = "splash"
     const val HOME_ROUTE = "home"
     const val PLAYER_ROUTE = "player"
     const val SEARCH_ROUTE = "search"
@@ -119,7 +121,7 @@ fun AppNavigationContainer(navController: NavHostController) { // Renamed to ref
             }
         }
     ) { innerPadding ->
-        AppNavHost(navController = navController, startDestination = AppRoutes.HOME_ROUTE, innerPadding = innerPadding)
+        AppNavHost(navController = navController, startDestination = AppRoutes.SPLASH_ROUTE, innerPadding = innerPadding)
     }
 }
 
@@ -135,6 +137,17 @@ fun AppNavHost(
         startDestination = startDestination,
         modifier = Modifier.padding(innerPadding) // Apply padding here
     ) {
+        composable(route = AppRoutes.SPLASH_ROUTE) {
+            SplashScreen(
+                onSplashFinished = {
+                    // Navigate to main app screen and clear splash from back stack
+                    navController.navigate(AppRoutes.HOME_ROUTE) {
+                        popUpTo(AppRoutes.SPLASH_ROUTE) { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable(route = AppRoutes.HOME_ROUTE) {
             MovieScreen(
                 onMovieClick = { movieId ->

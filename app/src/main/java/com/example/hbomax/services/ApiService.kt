@@ -36,7 +36,6 @@ interface ApiService {
 }
 
 
-// Singleton for Retrofit instance
 object TMDBApiServiceProvider {
     private const val BASE_URL = "https://api.themoviedb.org/3/"
     val imageBaseUrl = "https://image.tmdb.org/t/p/w500" // For constructing full image URLs
