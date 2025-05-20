@@ -19,13 +19,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.hbomax.ui.theme.HBOMaxTheme
 import androidx.compose.foundation.clickable
-import androidx.navigation.NavHostController
-import com.example.hbomax.ui.navigation.bottomNavItems
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieScreen(
-    navController: NavHostController,
     popularMovieViewModel: PopularMovieViewModel = PopularMovieViewModel(),
     onMovieClick: (Int) -> Unit
 ) {
@@ -43,31 +40,6 @@ fun MovieScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
-        },
-        bottomBar = {
-            NavigationBar(
-                containerColor = MaterialTheme.colorScheme.surface, // Or surfaceVariant
-                contentColor = MaterialTheme.colorScheme.onSurface
-            ) {
-                bottomNavItems.forEachIndexed { index, item ->
-                    NavigationBarItem(
-                        selected = selectedItemIndex == index,
-                        onClick = {
-                            selectedItemIndex = index
-                            navController.navigate(item.route)
-                        },
-                        label = { Text(item.title, style = MaterialTheme.typography.labelSmall) },
-                        icon = { Icon(item.icon, contentDescription = item.title) },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary, // Or your MaxVibrantPurple
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                            indicatorColor = MaterialTheme.colorScheme.secondaryContainer // Or a subtle primary variant
-                        )
-                    )
-                }
-            }
         }
     ) { paddingValues ->
         Box(
@@ -181,7 +153,7 @@ fun MovieScreenLoadingPreview() {
 fun MovieScreenSuccessPreview() {
     HBOMaxTheme { // Replace with your theme
         MovieScreen(
-            onMovieClick = {}, navController = NavHostController(LocalContext.current),
+            onMovieClick = {}
         )
     }
 }
